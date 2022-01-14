@@ -15,5 +15,3 @@ This project is developed and designed for self-learning purpose only.
 - Navicat 
 - Java 
 
-
-school management project is a student information management website based on an open source project called RouYi. By understanding the design of RouYi's framework and 
