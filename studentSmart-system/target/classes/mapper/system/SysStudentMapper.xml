@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysStudentMapper">
+
+	<resultMap type="SysStudent" id="SysStudentResult">
+		<id     property="num"        column="num"       />
+		<result property="id"        column="id"       />
+		<result property="name"      column="name"     />
+		<result property="gender"      column="gender"     />
+		<result property="birthday"      column="birthday"     />
+		<result property="comment"        column="comment"        />
+	</resultMap>
+	
+	<!--<sql id="selectPostVo">
+        select post_id, post_code, post_name, post_sort, status, create_by, create_time, remark 
+		from sys_post
+    </sql>
+	
+	<select id="selectPostList" parameterType="SysPost" resultMap="SysPostResult">
+	    <include refid="selectPostVo"/>
+		<where>
+			<if test="postCode != null and postCode != ''">
+				AND post_code like concat('%', #{postCode}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+			<if test="postName != null and postName != ''">
+				AND post_name like concat('%', #{postName}, '%')
+			</if>
+		</where>
+	</select>-->
+	
+	<select id="selectStudentList" parameterType="SysStudent" resultMap="SysStudentResult">
+		select 
+			*
+		from 
+			sys_student
+		<!-- 共bootstrap table查询使用 -->
+		<where>
+			<if test="id !=null and id !=''">
+				id=#{id}
+			</if>
+			<if test="name !=null and name !=''">
+				name=#{name}
+			</if>
+		
+		</where>
+	
+	</select>
+	
+	<insert id="insertStudent" parameterType="SysStudent" keyProperty="id">
+		insert into sys_student(
+			id,
+			name,
+			gender,
+			birthday,
+			comment
+		)
+		values(
+			#{id},
+			#{name},
+			#{gender},
+			#{birthday},
+			#{comment}
+			
+		)
+	</insert>
+	<delete id="deleteStudentByIds" parameterType="String">
+		delete from sys_student
+		where
+			id=#{id}
+	
+	</delete>
+	<select id="selectStudentByNum" parameterType="Long" resultMap="SysStudentResult">
+		select 
+			num, id, name, birthday, gender, comment
+		from 
+			sys_student
+		where 
+			num=#{num}
+	</select>
+	<update id="updateStudent" parameterType="SysStudent">
+		update sys_student
+		<set>
+			name=#{name},
+			id=#{id},
+			birthday=#{birthday},
+			gender=#{gender},
+			comment=#{comment}
+		</set>
+		where num=#{num}
+	</update>
+	<select id="checkStudentIdUnique" parameterType="String" resultMap="SysStudentResult">
+		select 
+			* 
+		from 
+			sys_student
+		where
+			id=#{id} limit 1
+	</select>
+	<select id="EditStudentIdUnique" parameterType="String" resultMap="SysStudentResult">
+		select 
+			* 
+		from 
+			sys_student
+		where
+			id=#{id} limit 1
+	</select>
+
+</mapper> 

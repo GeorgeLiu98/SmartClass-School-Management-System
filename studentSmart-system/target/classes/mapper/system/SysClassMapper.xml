@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysClassMapper">
+
+	<resultMap type="SysClass" id="SysClassResult">
+		<id     property="num"        column="num"       />
+		<result property="classNum"        column="classNum"       />
+		<result property="teacher"      column="teacher"     />
+		<result property="size"      column="size"     />
+		<result property="grade"      column="grade"     />
+		<result property="reward"        column="reward"        />
+	</resultMap>
+	
+	<select id="selectClassList" parameterType="SysClass" resultMap="SysClassResult">
+		select 
+			*
+		from 
+			sys_class
+		<!-- 供bootstrap table查询使用 -->
+		<where>
+			<if test="classNum !=null and classNum !=''">
+				classNum=#{classNum}
+			</if>
+			<if test="teacher !=null and teacher !=''">
+				teacher=#{teacher}
+			</if>
+			<if test="grade !=null and grade !=''">
+				grade=#{grade}
+			</if>
+		</where>
+	
+	</select>
+	<insert id="insertClass" parameterType="SysClass">
+		insert into sys_class(
+			grade,
+			classNum,
+			teacher,
+			size,
+			reward
+		)
+		values(
+			#{grade},
+			#{classNum},
+			#{teacher},
+			#{size},
+			#{reward}
+		)
+	
+	</insert>
+	<delete id="deleteClassByNum" parameterType="SysClass">
+		delete from
+			sys_class
+		where
+			num=#{num}
+	</delete>
+	<select id="checkClassNameUnique" parameterType="String" resultMap="SysClassResult">
+		select 
+			*
+		from 
+			sys_class
+		where
+			classNum=#{classNum} limit 1
+	</select>
+	<select id="selectClassByNum" parameterType="String" resultMap="SysClassResult">
+		select
+			*
+		from 
+			sys_class
+		where
+			num=#{num}
+	</select>
+	<update id="updateClass" parameterType="SysClass">
+		update sys_class
+		<set>
+			grade=#{grade},
+			classNum=#{classNum},
+			teacher=#{teacher},
+			size=#{size},
+			reward=#{reward}
+		</set>
+		where num=#{num}
+	</update>
+	<select id="EditClassNumUnique" parameterType="String" resultMap="SysClassResult">
+		select 
+			*
+		from sys_class
+		where classNum=#{classNum}
+	
+	</select>
+</mapper> 

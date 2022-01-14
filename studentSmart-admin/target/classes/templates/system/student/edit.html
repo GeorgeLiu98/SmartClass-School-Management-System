@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改学生信息')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-post-edit" th:object="${student}">
+			<input id="num" name="num" type="hidden" th:field="*{num}"/> 
+			<div class="form-group">
+				<label class="col-sm-3 control-label is-required">学生姓名：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="name" id="name" th:field="*{name}" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label is-required">学号：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="id" id="id" th:field="*{id}" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label is-required">生日：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="birthday" id="birthday" th:field="*{birthday}" placeholder="yyyy-mm-dd" required>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label is-required">性别：</label>
+				<div class="col-sm-8">
+					<!-- <div class="radio-box">
+						<input type="radio" id="male" name="gender" value="Male" th:field="*{gender}" required/><label>男</label>
+					</div>
+					<div class="radio-box">
+						<input type="radio" id="female" name="gender" value="Female" th:field="*{gender}" required/><label>女</label>
+					</div> -->
+					 <div class="radio-box" th:each="dict : ${@dict.getType('sys_student_gender')}">
+						<input type="radio" th:id="${dict.dictValue}" name="gender" th:value="${dict.dictValue}" th:field="*{gender}" required/>
+						<label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+					</div>
+				</div>
+			</div>
+			
+			
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<textarea id="comment" name="comment" class="form-control" th:field="*{comment}">[[*{remark}]]</textarea>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+	
+	<!--以下是 jQuery 框架 -->
+	<script type="text/javascript">
+		var prefix = ctx + "system/student";
+		
+		/* jQuery自带的validattion函数，在填写表单时对填入form中的内容进行校验*/
+		$("#form-post-edit").validate({
+			onkeyup: false,
+			rules:{
+				id:{
+					remote: {
+		                url: ctx + "system/student/EditStudentIdUnique",//要发送的后台地址
+		                type: "post",//post方法，声明传值给后台
+		                dataType: "json",//后台处理后返回的数据格式
+		                data: {
+		                	"id": function() {
+		                		return $.common.trim($("#id").val());
+							},
+		                	"num" : function() {
+		                        return $.common.trim($("#num").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+				postCode:{
+					remote: {
+		                url: ctx + "system/post/checkPostCodeUnique",
+		                type: "post",
+		                dataType: "json",
+		                data: {
+		                	"postId": function() {
+							    return $("input[name='postId']").val();
+							},
+		                	"postCode" : function() {
+		                		return $.common.trim($("#postCode").val());
+		                    }
+		                },
+		                dataFilter: function(data, type) {
+		                	return $.validate.unique(data);
+		                }
+		            }
+				},
+				postSort:{
+					digits:true
+				},
+			},
+			messages: {
+		        "id": {
+		            remote: "该学生号已经存在"
+		        },
+		    },
+		    focusCleanup: true
+		});
+		
+		/*对应了ry-ui.js 中的封装，调用.js里的对应的函数。在save（）方法使用ajax提交数据到后台controller*/
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.save(prefix + "/edit", $('#form-post-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>
